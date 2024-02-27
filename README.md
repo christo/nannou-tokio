@@ -49,7 +49,7 @@ _Thoughts on async support and API implications_ says the update callback is not
 
 > If we want to allow users to create windows during update too, then we'd also need update to be async, which seems quite a bit trickier to achieve. update is called within the blocking call to winit::EventLoop::run callback, which is not async and already runs within the futures::executor::block_on context created on App::run.
 * nannou dependency [winit](https://github.com/rust-windowing/winit) has open github issue [Integration with async ecosystem #1199](https://github.com/rust-windowing/winit/issues/1199) which suggests a root cause that might need to be fixed before it's easy to embed nannou in apps with async runtimes.
-* the winit event loop needs to be run on the main application thread on Mac OS or it explicitly explodes saying this.
+* the winit event loop needs to be run on the main application thread on Mac OS or it explicitly explodes saying this. I haven't explored linux or windows yet.
 * nannou seems to assume a concrete native window is essential (except for a web target)
 
 
