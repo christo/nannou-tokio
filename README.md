@@ -10,6 +10,29 @@ Tokio is more flexible because unlike nannou, tokio can be configured to run in 
 
 See [src/main.rs]. Using the `tokio::runtime` API you can spawn a tokio main event loop and later let the main thread be blocked by nannou without affecting the tokio async code. Nannou probably cannot be made to work inside a tokio managed runtime so running spawning tokio explicitly gets around this.
 
+
+To run the demo:
+```shell
+cargo run --release 
+
+```
+This opens a black nannou window but the tcp echo service is also running inside tokio, so you can interact with it with something like telnet:
+
+```shell
+telnet 127.0.0.1 8080
+```
+and everything you type is echoed back to you:
+```console 
+yeah
+yeah
+foo
+foo
+bar
+bar
+```
+
+While the nannou main loop is not blocked.
+
 ## Nannou
 
 [docs](https://docs.rs/nannou/latest/nannou/) | [github](https://github.com/nannou-org/nannou) | [website](https://nannou.cc/)
