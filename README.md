@@ -2,6 +2,8 @@
 
 > Nannou Tokio is about to explode...
 
+Shout out to [davidbegin](https://github.com/davidbegin/) and [rockerBOO](https://github.com/rockerBOO/)
+
 This project is an experiment running Nannou in-process with Tokio. It's harder than it initially seemed because they each fight for runtime supremacy. These are notes taken analysing the problem and hopefully useful to understanding solutions.
 
 The main goal is to incorporate nannou in an existing application that uses Tokio to manage the main event loop.
