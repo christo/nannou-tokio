@@ -8,7 +8,7 @@ The main goal is to incorporate nannou in an existing application that uses Toki
 
 Tokio is more flexible because unlike nannou, tokio can be configured to run in a child threadpool spawned from the main thread.
 
-See [src/main.rs]. Using the `tokio::runtime` API you can spawn a tokio main event loop and later let the main thread be blocked by nannou without affecting the tokio async code. Nannou probably cannot be made to work inside a tokio managed runtime so running spawning tokio explicitly gets around this.
+See [src/main.rs](src/main.rs). Using the `tokio::runtime` API you can spawn a tokio main event loop and later let the main thread be blocked by nannou without affecting the tokio async code. Nannou probably cannot be made to work inside a tokio managed runtime so running spawning tokio explicitly gets around this.
 
 
 To run the demo:
