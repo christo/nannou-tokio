@@ -4,35 +4,11 @@
 
 This project is an experiment running Nannou in-process with Tokio. It's harder than it initially seemed because they each fight for runtime supremacy. These are notes taken analysing the problem and hopefully useful to understanding solutions.
 
-The main goal is to incorporate Nannou in an existing application that uses Tokio to manage the main event loop.
+The main goal is to incorporate nannou in an existing application that uses Tokio to manage the main event loop.
 
-```rust
+Tokio is more flexible because unlike nannou, tokio can be configured to run in a child threadpool spawned from the main thread.
 
-/// the names of these methods are arbitrary, their signatures have interdependent constraits 
-/// from derived how they get passed to the app() "fluent builder" API
-
-/// SomeModel is mutable only within this callback
-fn update(_app: &App, _model: &mut SomeModel, _update: Update) {}
-
-/// SomeModel is immutable inside view
-fn view(_app: &App, _model: &SomeModel, _frame: Frame) {}
-
-/// return type of this method defines the model type
-fn model(_app: &App) -> SomeModel {
-    SomeModel {
-      // ...
-    }
-}
-```
-
-The model in a nannou app can be used for dynamic rendering of something like Twitch Chat by calling methods on the passed-in `mut` reference to the user-defined struct that is the return type of the previously registered function passed to `app()`. Updates to the model are made in a registered callback with a signature like this `fn update(_app: &App, model: &mut SomeModel, _: Update) { ... }` where `SomeModel` is a user-defined struct returned from the function passed to `app(fn_returning_SomeModel)`. Note the update callback, unlike the `view(...)` callback, receives a `mut` model reference. 
-
-
-
-
-## Running Nannou in its own process
-
-Avoiding running Nannou in-process is probably easier than embedding and could still be orchestrated centrally using something like `std::process::Command`.
+See [src/main.rs]. Using the `tokio::runtime` API you can spawn a tokio main event loop and later let the main thread be blocked by nannou without affecting the tokio async code. Nannou probably cannot be made to work inside a tokio managed runtime so running spawning tokio explicitly gets around this.
 
 ## Nannou
 
@@ -66,31 +42,24 @@ async fn main() {
 }
 ```
 
-But more flexibility comes from using [tokio::runtime::Runtime](https://docs.rs/tokio/latest/tokio/runtime/index.html) like this:
-
-```rust
-
-```
+But more flexibility comes from using [tokio::runtime::Runtime](https://docs.rs/tokio/latest/tokio/runtime/index.html) from [this example](https://docs.rs/tokio/latest/tokio/runtime/index.html).
 
 Examples of tokio async integration: 
 
 * Integrating tokio with async libraries: https://stackoverflow.com/questions/76467985/how-can-i-extend-the-lifetime-of-nannou-model-using-an-async-websocket-client
 * Tokio runtime inside tokio runtime: https://stackoverflow.com/questions/62536566/how-can-i-create-a-tokio-runtime-inside-another-tokio-runtime-without-getting-th
 
-
-
 ## See Also
 
 ### Async / Await in Rust
 
-* [ ] [How Rust optimizes async/await I](https://tmandry.gitlab.io/blog/posts/optimizing-await-1/)
-* [ ] [why async fn in traits are hard](https://smallcultfollowing.com/babysteps/blog/2019/10/26/async-fn-in-traits-are-hard/)
-* [ ] Youtube [The Talk You've Been Await-ing for](https://www.youtube.com/watch?v=NNwK5ZPAJCk) QCon SF 2019
-* [ ] Youtube [Async I/O in Depth](https://www.youtube.com/watch?v=fdxhcDne2Ww): Thread Pools, Radix Trees, Channels and More - High Performance HTTP Web Servers 
+* [How Rust optimizes async/await I](https://tmandry.gitlab.io/blog/posts/optimizing-await-1/)
+* [why async fn in traits are hard](https://smallcultfollowing.com/babysteps/blog/2019/10/26/async-fn-in-traits-are-hard/)
+* Youtube [The Talk You've Been Await-ing for](https://www.youtube.com/watch?v=NNwK5ZPAJCk) QCon SF 2019
+* Youtube [Async I/O in Depth](https://www.youtube.com/watch?v=fdxhcDne2Ww): Thread Pools, Radix Trees, Channels and More - High Performance HTTP Web Servers 
 
 ### Nannou
 
-* [ ] github [@altunenes/rusty_art](https://github.com/altunenes/rusty_art) interesting general rust creative coding repo including nannou
-* [ ] Youtube _@timClicks_ [Creative Coding in Rust - Playing around with Nannou 0.18](https://www.youtube.com/watch?v=41p5tBGMfxI) see [39:41](https://www.youtube.com/live/41p5tBGMfxI?si=HDVPTQWmHKc-Pmcn&t=2381)
-
+* Youtube _@timClicks_ [Creative Coding in Rust - Playing around with Nannou 0.18](https://www.youtube.com/watch?v=41p5tBGMfxI) see [39:41](https://www.youtube.com/live/41p5tBGMfxI?si=HDVPTQWmHKc-Pmcn&t=2381) for discussion about how update changes the model.
+* YouTube _@GitHub_ part where model updates are explained: [Nannou: creative coding with Rust - GitHub Universe 2020](https://youtu.be/Ml6tpyTyXhM?si=wi202ZzytEHBEdnC&t=1034)
 ----
