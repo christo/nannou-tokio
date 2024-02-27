@@ -1,12 +1,11 @@
 use nannou::prelude::*;
-use tokio::net::TcpListener;
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
+use tokio::net::TcpListener;
 use tokio::runtime::Runtime;
-
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Create multithreaded executor
-    let rt  = Runtime::new()?;
+    let rt = Runtime::new()?;
 
     // Spawn the main tokio loop, here it functions as a tcp echo server
     rt.spawn(async {
