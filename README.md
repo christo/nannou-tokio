@@ -55,8 +55,6 @@ _Thoughts on async support and API implications_ says the update callback is not
 
 ## Tokio
 
-Q: Will `tokio::runtime` run its event loop in a child thread so we can run nannou blocking the main thread?
-* we could wrap the nannou invocation in a loop to catch a panic and maybe reset and try again
 
 tokio runtime is usually used like this:
 
